@@ -1,5 +1,9 @@
 {
-	"port": 8080,
-	"bodyLimit": "100kb",
-	"corsHeaders": ["Link"]
+  "port": 8080,
+  "bodyLimit": "100kb",
+  "db": {
+    "user": "quo_all",
+    "password": "mnbvcxz",
+    "connectString": "(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 191.168.71.137)(PORT = 1521))) (CONNECT_DATA =(SERVICE_NAME = tmn)))"
+  }
 }
