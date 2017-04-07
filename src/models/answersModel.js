@@ -13,7 +13,7 @@ export default class answersController {
                     },
                     null);
             }
-            // cb(null, connection)
+            // cb(null, connection);
             let sql = 'select * from X$USERS t order by xu$name';
             dbOrcl.executeObj(connection, sql, function (err, result) {
                     if (err) {
