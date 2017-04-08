@@ -1,8 +1,10 @@
 import http from 'http';
 import express from 'express';
+import favicon from 'serve-favicon';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import api from './api';
+import path from 'path';
 import config from './config.json';
 
 let app = express();
@@ -14,6 +16,8 @@ app.use(bodyParser.json({
     limit: config.bodyLimit
 }));
 
+__dirname = process.cwd();
+app.use(favicon(path.join(__dirname, 'docs', 'favicon.ico')));
 app.use('/api', api);
 
 app.get('/', function (req, res) {

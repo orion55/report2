@@ -19,7 +19,7 @@
  *   dbconfig.js
  *
  * DESCRIPTION
- *   Holds the credentials used by node-oracledb examples to connect
+ *   Holds the credentials used by node-oracledb examples to doConnect
  *   to the database.  Production applications should consider using
  *   External Authentication to avoid hard coded credentials.
  *
@@ -42,7 +42,7 @@
  *   variable and put the file in $TNS_ADMIN/tnsnames.ora.
  *
  *   If connectString is not specified, the empty string "" is used
- *   which indicates to connect to the local, default database.
+ *   which indicates to doConnect to the local, default database.
  *
  *   External Authentication can be used by setting the optional
  *   property externalAuth to true.  External Authentication allows
@@ -55,11 +55,11 @@
  *   Errors like:
  *     ORA-12541: TNS:no listener
  *   or
- *     ORA-12154: TNS:could not resolve the connect identifier specified
+ *     ORA-12154: TNS:could not resolve the doConnect identifier specified
  *   indicate connectString is invalid.
  *
  *   The error:
- *     ORA-12514: TNS:listener does not currently know of requested in connect descriptor
+ *     ORA-12514: TNS:listener does not currently know of requested in doConnect descriptor
  *   indicates connectString is invalid.  You are reaching a computer
  *   with Oracle installed but the service name isn't known.
  *   Use 'lsnrctl services' on the database server to find available services

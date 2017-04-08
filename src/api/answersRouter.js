@@ -1,8 +1,8 @@
 import {Router} from 'express';
-import AnswersCont from '../models/answersModel'
+import AnswersModel from '../models/answersModel'
 
 let anwersRouter = Router();
-let answers = new AnswersCont();
+let answers = new AnswersModel();
 
 anwersRouter.route('/').get(function (req, res) {
     answers.getReport(function (err, result) {
