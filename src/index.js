@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import api from './api';
 import path from 'path';
-import config from './config.json';
+import config from './config/config.json';
 
 let app = express();
 app.server = http.createServer(app);
@@ -18,7 +18,7 @@ app.use(bodyParser.json({
 
 __dirname = process.cwd();
 app.use(favicon(path.join(__dirname, 'docs', 'favicon.ico')));
-app.use('/api', api);
+app.use('/api/v1', api);
 
 app.get('/', function (req, res) {
     res.send('All is Ok!');
