@@ -40,73 +40,72 @@ var dbConfig = require('./dbconfig.js');
 var numRows = 10;  // number of rows to return from each call to getRows()
 
 oracledb.getConnection(
-  {
-    user          : dbConfig.user,
-    password      : dbConfig.password,
-    connectString : dbConfig.connectString
-  },
-  function(err, connection)
-  {
-    if (err) { console.error(err.message); return; }
-    connection.execute(
-      "SELECT employee_id, last_name " +
-        "FROM   employees " +
-        "WHERE ROWNUM < 25 " +
-        "ORDER BY employee_id",
-      [], // no bind variables
-      {
-        resultSet: true, // return a result set.  Default is false
-        prefetchRows: 25 // the prefetch size can be set for each query
-      },
-      function(err, result)
-      {
+    {
+        user: dbConfig.user,
+        password: dbConfig.password,
+        connectString: dbConfig.connectString
+    },
+    function (err, connection) {
         if (err) {
-          console.error(err.message);
-          doRelease(connection);
-          return;
+            console.error(err.message);
+            return;
         }
-        // console.log(result);
-        fetchRowsFromRS(connection, result.resultSet, numRows);
-      });
-  });
-
-function fetchRowsFromRS(connection, resultSet, numRows)
-{
-  resultSet.getRows(
-    numRows,  // get this many rows
-    function (err, rows)
-    {
-      if (err) {
-        console.error(err);
-        doClose(connection, resultSet); // always close the result set
-      } else if (rows.length > 0) {
-        console.log("fetchRowsFromRS(): Got " + rows.length + " rows");
-        console.log(rows);
-        if (rows.length === numRows) // might be more rows
-          fetchRowsFromRS(connection, resultSet, numRows);
-        else
-          doClose(connection, resultSet); // always close the result set
-      } else { // no rows
-        doClose(connection, resultSet); // always close the result set
-      }
+        connection.execute(
+            "SELECT employee_id, last_name " +
+            "FROM   employees " +
+            "WHERE ROWNUM < 25 " +
+            "ORDER BY employee_id",
+            [], // no bind variables
+            {
+                resultSet: true, // return a result set.  Default is false
+                prefetchRows: 25 // the prefetch size can be set for each query
+            },
+            function (err, result) {
+                if (err) {
+                    console.error(err.message);
+                    doRelease(connection);
+                    return;
+                }
+                // console.log(result);
+                fetchRowsFromRS(connection, result.resultSet, numRows);
+            });
     });
+
+function fetchRowsFromRS(connection, resultSet, numRows) {
+    resultSet.getRows(
+        numRows,  // get this many rows
+        function (err, rows) {
+            if (err) {
+                console.error(err);
+                doClose(connection, resultSet); // always close the result set
+            } else if (rows.length > 0) {
+                console.log("fetchRowsFromRS(): Got " + rows.length + " rows");
+                console.log(rows);
+                if (rows.length === numRows) // might be more rows
+                    fetchRowsFromRS(connection, resultSet, numRows);
+                else
+                    doClose(connection, resultSet); // always close the result set
+            } else { // no rows
+                doClose(connection, resultSet); // always close the result set
+            }
+        });
 }
 
-function doRelease(connection)
-{
-  connection.close(
-    function(err)
-    {
-      if (err) { console.error(err.message); }
-    });
+function doRelease(connection) {
+    connection.close(
+        function (err) {
+            if (err) {
+                console.error(err.message);
+            }
+        });
 }
 
-function doClose(connection, resultSet)
-{
-  resultSet.close(
-    function(err)
-    {
-      if (err) { console.error(err.message); }
-      doRelease(connection);
-    });
+function doClose(connection, resultSet) {
+    resultSet.close(
+        function (err) {
+            if (err) {
+                console.error(err.message);
+            }
+            doRelease(connection);
+        });
 }

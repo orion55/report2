@@ -10,10 +10,7 @@ if (process.env.NODE_ENV === 'work') {
 let oracleDb = require('oracledb');
 
 export default class Db {
-    /*doConnect = (cb) => oracleDb.getConnection(config.db, cb);
-    doExecuteArr = (connect, sql, cb) => connect.execute(sql, [], cb);
-    doRelease = (connect, cb) => connect.doRelease(cb);*/
     doConnect = () => oracleDb.getConnection(config.db);
-    doExecuteArr = (connect, sql) => connect.execute(sql, []);
-    doClose= (connect) => connect.close();
+    doExecuteArr = (connect, sql) => connect.execute(sql, [], {});
+    doClose = (connect) => connect.close();
 }
