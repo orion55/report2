@@ -1,16 +1,17 @@
 let config;
 
 if (process.env.NODE_ENV === 'home') {
-    config = require('../config/configHome.json');
+    config = require('../config/configDbHome.json');
 }
 if (process.env.NODE_ENV === 'work') {
-    config = require('../config/config.json');
+    config = require('../config/configDb.json');
 }
 
 let oracleDb = require('oracledb');
 
 export default class Db {
     doConnect = () => oracleDb.getConnection(config.db);
-    doExecuteArr = (connect, sql) => connect.execute(sql, [], {});
+    doExecuteArr = (connect, sql) => connect.execute(sql, [], {resultSet: true});
     doClose = (connect) => connect.close();
+    doCloseResultSet = (resultSet) => resultSet.close();
 }

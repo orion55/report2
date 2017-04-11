@@ -13,6 +13,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var dbOrcl = new _db2.default();
+var numRows = 100;
 
 var answersModel = function answersModel() {
     _classCallCheck(this, answersModel);
@@ -21,9 +22,31 @@ var answersModel = function answersModel() {
         return new Promise(function (resolve, reject) {
             var sql = 'select * from X$USERS t order by xu$name';
             dbOrcl.doConnect().then(function (connection) {
-                dbOrcl.doExecuteArr(connection, sql).then(function (result) {
-                    dbOrcl.doClose(connection);
-                    resolve(result);
+                dbOrcl.doExecuteArr(connection, sql)
+                /*.then(result => {
+                 dbOrcl.doClose(connection);
+                 resolve(result);
+                 })*/
+                .then(function (resultSet) {
+                    var arrRows = [];
+
+                    function processResultSet() {
+                        resultSet.getRow().then(function (row) {
+                            if (!row) {
+                                dbOrcl.doClose(connection);
+                                resolve(arrRows);
+                            }
+                            arrRows.push(row);
+                            processResultSet();
+                        }).catch(function (err) {
+                            dbOrcl.doClose(connection);
+                            reject({
+                                status: 500,
+                                message: "Error getting row",
+                                detailed_message: err.message
+                            });
+                        });
+                    }
                 }).catch(function (err) {
                     dbOrcl.doClose(connection);
                     reject({ status: 500, message: "Error getting data", detailed_message: err.message });

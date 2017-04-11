@@ -51,10 +51,7 @@ oracledb.getConnection(
             return;
         }
         connection.execute(
-            "SELECT employee_id, last_name " +
-            "FROM   employees " +
-            "WHERE ROWNUM < 25 " +
-            "ORDER BY employee_id",
+            "select * from X$USERS t order by xu$name",
             [], // no bind variables
             {
                 resultSet: true, // return a result set.  Default is false

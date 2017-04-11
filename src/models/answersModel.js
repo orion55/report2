@@ -1,6 +1,7 @@
 import Db from './db';
 
 let dbOrcl = new Db();
+const numRows = 100;
 
 export default class answersModel {
     getReport2 = () => {
@@ -10,8 +11,32 @@ export default class answersModel {
                 .then(connection => {
                     dbOrcl.doExecuteArr(connection, sql)
                         .then(result => {
-                            dbOrcl.doClose(connection);
-                            resolve(result);
+                            let arrRows = [];
+
+                            function processResultSet() {
+                                result.resultSet.getRow()
+                                    .then(row => {
+                                            if (!row) {
+                                                dbOrcl.doCloseResultSet(result.resultSet);
+                                                return resolve(arrRows);
+                                            }
+                                            arrRows.push(row);
+                                            processResultSet();
+                                        }
+                                    )
+                                    .catch(err => {
+                                        dbOrcl.doCloseResultSet(result.resultSet)
+                                            .then(dbOrcl.doClose(connection)
+                                                .then(reject({
+                                                    status: 500, message: "Error getting row",
+                                                    detailed_message: err.message
+                                                }))
+                                            )
+
+                                    });
+                            }
+
+                            processResultSet();
                         })
                         .catch(err => {
                             dbOrcl.doClose(connection);

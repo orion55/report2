@@ -9,10 +9,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 var config = void 0;
 
 if (process.env.NODE_ENV === 'home') {
-    config = require('../config/configHome.json');
+    config = require('../config/configDbHome.json');
 }
 if (process.env.NODE_ENV === 'work') {
-    config = require('../config/config.json');
+    config = require('../config/configDb.json');
 }
 
 var oracleDb = require('oracledb');
@@ -25,17 +25,13 @@ var Db = function Db() {
     };
 
     this.doExecuteArr = function (connect, sql) {
-        return connect.execute(sql, []);
+        return connect.execute(sql, [], { resultSet: true });
     };
 
     this.doClose = function (connect) {
         return connect.close();
     };
-}
-/*doConnect = (cb) => oracleDb.getConnection(config.db, cb);
-doExecuteArr = (connect, sql, cb) => connect.execute(sql, [], cb);
-doRelease = (connect, cb) => connect.doRelease(cb);*/
-;
+};
 
 exports.default = Db;
 //# sourceMappingURL=db.js.map
