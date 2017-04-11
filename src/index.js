@@ -6,6 +6,7 @@ import bodyParser from 'body-parser';
 import api from './api';
 import path from 'path';
 import config from './config/config.json';
+let expressValidator = require('express-validator');
 
 let app = express();
 app.server = http.createServer(app);
@@ -15,6 +16,8 @@ app.use(morgan('dev'));
 app.use(bodyParser.json({
     limit: config.bodyLimit
 }));
+
+app.use(expressValidator());
 
 __dirname = process.cwd();
 app.use(favicon(path.join(__dirname, 'docs', 'favicon.ico')));

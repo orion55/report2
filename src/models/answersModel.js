@@ -27,12 +27,11 @@ export default class answersModel {
                         })
                         .catch(err => {
                             dbOrcl.doClose(connection);
-                            reject({status: 500, message: "Error getting data", detailed_message: err.message});
+                            reject({status: 500, msg: "Error getting data", detail_msg: err.message});
                         })
                 })
                 .catch(err => {
-                    console.log(err.message);
-                    reject({status: 500, message: "Error connecting to DB", detailed_message: err.message});
+                    reject({status: 500, msg: "Error connecting to DB", detail_msg: err.message});
                 });
         })
     };

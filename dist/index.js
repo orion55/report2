@@ -38,6 +38,8 @@ var _config2 = _interopRequireDefault(_config);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var expressValidator = require('express-validator');
+
 var app = (0, _express2.default)();
 app.server = _http2.default.createServer(app);
 
@@ -46,6 +48,8 @@ app.use((0, _morgan2.default)('dev'));
 app.use(_bodyParser2.default.json({
     limit: _config2.default.bodyLimit
 }));
+
+app.use(expressValidator());
 
 __dirname = process.cwd();
 app.use((0, _serveFavicon2.default)(_path2.default.join(__dirname, 'docs', 'favicon.ico')));
