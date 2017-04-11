@@ -16,12 +16,12 @@ var anwersRouter = (0, _express.Router)();
 var answers = new _answersModel2.default();
 
 anwersRouter.route('/').get(function (req, res) {
-    answers.getReport2().then(function (result) {
+    answers.getReport().then(function (result) {
         res.contentType('application/json').status(200);
         res.send(JSON.stringify(result));
     }).catch(function (err) {
         res.set('Content-Type', 'application/json');
-        res.status(500).send(JSON.stringify(err));
+        res.status(500).send(JSON.stringify(err, null, "\t"));
     });
 });
 

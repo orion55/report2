@@ -31,6 +31,10 @@ var Db = function Db() {
     this.doClose = function (connect) {
         return connect.close();
     };
+
+    this.doCloseResultSet = function (resultSet) {
+        return resultSet.close();
+    };
 };
 
 exports.default = Db;
