@@ -3,12 +3,27 @@ import Db from './db';
 let dbOrcl = new Db();
 
 export default class answersModel {
-    getReport = () => {
+    getReport = (arrDate) => {
         return new Promise((resolve, reject) => {
-            let sql = 'select * from X$USERS t order by xu$name';
+            // let sql = 'select * from X$USERS t order by xu$name';
+            const sql = `select t.operdate,
+                               t.closedate,
+                               t.closeday,
+                               t.closetime,
+                               t.usercodeopen,
+                               t.usercodeclose,
+                               t.unloadseqdel,
+                               t.unloadseqback,
+                               t.btrv_address,
+                               t.rowver
+                          from operdays t
+                         where t.operdate >= to_date(:dateFrom, 'mm.dd.yyyy')
+                           and t.operdate <= to_date(:dateTo, 'mm.dd.yyyy')
+                         order by t.operdate asc`;
+            // console.log(arrDate);
             dbOrcl.doConnect()
                 .then(connection => {
-                    return dbOrcl.doExecuteArr(connection, sql)
+                    return dbOrcl.doExecuteArr(connection, sql, arrDate)
                         .then(result => {
                             let arrRows = [];
 
@@ -23,6 +38,7 @@ export default class answersModel {
                                         processResultSet();
                                     })
                             }
+
                             processResultSet();
                         })
                         .catch(err => {

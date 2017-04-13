@@ -16,7 +16,7 @@ anwersRouter.route('/').get(function (req, res) {
                 res.status(500).send(JSON.stringify(removeDuplicates(result.array(), 'param')));
                 return;
             }
-            answers.getReport()
+            answers.getReport({dateFrom: req.query.from, dateTo: req.query.to})
                 .then(result => {
                     res.contentType('application/json').status(200);
                     res.send(JSON.stringify(result));
