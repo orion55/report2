@@ -1,5 +1,6 @@
 import {Router} from 'express';
-import AnswersModel from '../models/answersModel'
+import AnswersModel from '../models/answersModel';
+import {removeDuplicates} from '../util';
 
 let anwersRouter = Router();
 let answers = new AnswersModel();
@@ -12,7 +13,7 @@ anwersRouter.route('/').get(function (req, res) {
         .then(result => {
             if (!result.isEmpty()) {
                 res.set('Content-Type', 'application/json');
-                res.status(500).send(JSON.stringify(result.array(), null, "\t"));
+                res.status(500).send(JSON.stringify(removeDuplicates(result.array(), 'param')));
                 return;
             }
             answers.getReport()
@@ -22,7 +23,7 @@ anwersRouter.route('/').get(function (req, res) {
                 })
                 .catch(err => {
                     res.set('Content-Type', 'application/json');
-                    res.status(err.status).send(JSON.stringify(err, null, "\t"));
+                    res.status(err.status).send(JSON.stringify(err));
                 })
         });
 });
