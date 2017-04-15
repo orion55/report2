@@ -20,7 +20,6 @@ export default class answersModel {
                          where t.operdate >= to_date(:dateFrom, 'mm.dd.yyyy')
                            and t.operdate <= to_date(:dateTo, 'mm.dd.yyyy')
                          order by t.operdate asc`;
-            // console.log(arrDate);
             dbOrcl.doConnect()
                 .then(connection => {
                     return dbOrcl.doExecuteArr(connection, sql, arrDate)

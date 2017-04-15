@@ -19,8 +19,10 @@ app.use(bodyParser.json({
 
 app.use(expressValidator());
 
-__dirname = process.cwd();
-app.use(favicon(path.join(__dirname, 'docs', 'favicon.ico')));
+const dirName = process.cwd();
+app.set('docsPath', path.join(dirName, 'docs'));
+
+app.use(favicon(path.join(dirName, 'docs', 'favicon.ico')));
 app.use('/api/v1', api);
 
 app.get('/', function (req, res) {
