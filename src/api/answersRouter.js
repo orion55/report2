@@ -1,6 +1,7 @@
 import {Router} from 'express';
 import AnswersModel from '../models/answersModel';
 import {removeDuplicates} from '../util';
+import XlsxModel from '../models/excel';
 
 let anwersRouter = Router();
 let answers = new AnswersModel();
@@ -18,6 +19,12 @@ anwersRouter.route('/').get(function (req, res) {
             }
             answers.getReport({dateFrom: req.query.from, dateTo: req.query.to})
                 .then(result => {
+                    let xlsx = new XlsxModel();
+                    return xlsx.exportXlsx(result.rows, result.metaData);
+                })
+                .then(result => {
+                    const requestedUrl = req.protocol + '://' + req.get('Host');
+                    result.fileUrl = requestedUrl + '/' + result.fileUrl;
                     res.contentType('application/json').status(200);
                     res.send(JSON.stringify(result));
                 })

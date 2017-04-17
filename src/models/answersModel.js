@@ -1,4 +1,5 @@
 import Db from './db';
+import {jsUcfirst} from '../util';
 
 let dbOrcl = new Db();
 
@@ -25,13 +26,13 @@ export default class answersModel {
                     return dbOrcl.doExecuteArr(connection, sql, arrDate)
                         .then(result => {
                             let arrRows = [];
-
+                            const metaData = result.metaData.map(el => jsUcfirst(el.name));
                             function processResultSet() {
                                 result.resultSet.getRow()
                                     .then(row => {
                                         if (!row) {
                                             dbOrcl.doCloseResultSet(result.resultSet);
-                                            return resolve(arrRows);
+                                            return resolve({rows: arrRows, metaData: metaData});
                                         }
                                         arrRows.push(row);
                                         processResultSet();
