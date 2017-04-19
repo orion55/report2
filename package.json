@@ -6,6 +6,7 @@
   "scripts": {
     "dev-work": "cross-env NODE_ENV=work nodemon -w src --exec \"babel-node src --presets es2015,stage-0,stage-1,stage-2\"",
     "dev-home": "cross-env NODE_ENV=home nodemon -w src --exec \"babel-node src --presets es2015,stage-0,stage-1,stage-2\"",
+    "dev-prodaction": "cross-env NODE_ENV=prodaction nodemon -w src --exec \"babel-node src --presets es2015,stage-0,stage-1,stage-2\"",
     "build": "babel src -s -D -d dist --presets es2015,stage-0,stage-1,stage-2",
     "start": "node dist",
     "prestart": "npm run -s build"

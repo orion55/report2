@@ -7,7 +7,10 @@ export default class answersModel {
     getReport = (arrDate) => {
         return new Promise((resolve, reject) => {
             // let sql = 'select * from X$USERS t order by xu$name';
-            const sql = `select t.operdate,
+            let sql = '';
+
+            if (process.env.NODE_ENV === 'home') {
+                sql = `select t.operdate,
                                t.closedate,
                                t.closeday,
                                t.closetime,
@@ -21,12 +24,31 @@ export default class answersModel {
                          where t.operdate >= to_date(:dateFrom, 'mm.dd.yyyy')
                            and t.operdate <= to_date(:dateTo, 'mm.dd.yyyy')
                          order by t.operdate asc`;
+            } else {
+                sql = `select t.docdate          AS "Дата ED274",
+                t.opernum          AS "Код ED273",
+                    p.docdate          AS "Дата документа",
+                    p.docnum           AS "Номер документа",
+                    p.paysum           AS "Сумма документа",
+                    i.ed244_answercode,
+                    i.ed244_purpose
+                from ESIDMESSAGE t, esid273doc a, payorder p, inesidmessage i
+                where t.doctype = 273
+                and t.opernum = a.esidopernum
+                AND p.opernum = a.payopernum
+                AND i.edtype = 'ED274'
+                and i.eddate >= to_date(:dateFrom, 'mm.dd.yyyy')
+                and i.eddate <= to_date(:dateTo, 'mm.dd.yyyy')
+                AND MOD(i.ed243_edno / 1000, 1) * 1000 = a.edno
+                AND i.ed243_eddate = a.eddate`;
+            }
             dbOrcl.doConnect()
                 .then(connection => {
                     return dbOrcl.doExecuteArr(connection, sql, arrDate)
                         .then(result => {
                             let arrRows = [];
                             const metaData = result.metaData.map(el => jsUcfirst(el.name));
+
                             function processResultSet() {
                                 result.resultSet.getRow()
                                     .then(row => {

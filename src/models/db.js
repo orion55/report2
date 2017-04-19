@@ -1,10 +1,17 @@
-let config;
+let config = '';
 
-if (process.env.NODE_ENV === 'home') {
-    config = require('../config/configDbHome.json');
-}
-if (process.env.NODE_ENV === 'work') {
-    config = require('../config/configDb.json');
+switch (process.env.NODE_ENV) {
+    case 'home':
+        config = require('../config/configDbHome.json');
+        break;
+    case 'work':
+        config = require('../config/configDb.json');
+        break;
+    case 'prodaction':
+        config = require('../config/configDbProd.json');
+        break;
+    default:
+        console.log("Sorry, no config");
 }
 
 let oracleDb = require('oracledb');
