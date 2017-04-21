@@ -1,42 +1,6 @@
-/* Copyright (c) 2015, 2016, Oracle and/or its affiliates. All rights reserved. */
-
-/******************************************************************************
- *
- * You may not use the identified files except in compliance with the Apache
- * License, Version 2.0 (the "License.")
- *
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0.
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- * NAME
- *   select2.js
- *
- * DESCRIPTION
- *   Executes queries to show array and object output formats.
- *   Gets results directly without using a ResultSet.
- *   Uses Oracle's sample HR schema.
- *
- *   Scripts to create the HR schema can be found at:
- *   https://github.com/oracle/db-sample-schemas
- *
- *  *****************************************************************************/
-
 var async = require('async');
 var oracledb = require('oracledb');
 var dbConfig = require('./dbconfig.js');
-
-// Properties are applicable to all connections and SQL executions.
-// They can also be set or overridden at the individual execute() call level
-//
-// This script sets outFormat in the execute() call but it could be set here instead:
-// oracledb.outFormat = oracledb.OBJECT;
 
 var doconnect = function (cb) {
     oracledb.getConnection(
@@ -57,8 +21,24 @@ var dorelease = function (conn) {
 
 // Default Array Output Format
 var doquery_array = function (conn, cb) {
+    var sql = 'select t.docdate AS "Дата ED274", ' +
+        't.opernum AS "Код ED273", ' +
+        'p.docdate AS "Дата документа", ' +
+        'p.docnum  AS "Номер документа", ' +
+        'p.paysum  AS "Сумма документа", ' +
+        'i.ed244_answercode, ' +
+        'i.ed244_purpose ' +
+        'FROM ESIDMESSAGE t, esid273doc a, payorder p, inesidmessage i ' +
+        "where t.doctype = 273 " +
+        "and t.opernum = a.esidopernum " +
+        "AND p.opernum = a.payopernum " +
+        "AND i.edtype = 'ED274' " +
+        "and i.eddate >= to_date('01.01.2017', 'mm.dd.yyyy') " +
+        "and i.eddate <= to_date('02.01.2017', 'mm.dd.yyyy') " +
+        "AND MOD(i.ed243_edno / 1000, 1) * 1000 = a.edno " +
+        "AND i.ed243_eddate = a.eddate";
     conn.execute(
-        "select * from X$USERS t order by xu$name",
+        sql,
         function (err, result) {
             if (err) {
                 return cb(err, conn);
@@ -72,8 +52,24 @@ var doquery_array = function (conn, cb) {
 
 // Optional Object Output Format
 var doquery_object = function (conn, cb) {
+    var sql = 'select t.docdate          AS "Дата ED274", ' +
+        't.opernum AS "Код ED273", ' +
+        'p.docdate AS "Дата документа", ' +
+        'p.docnum  AS "Номер документа", ' +
+        'p.paysum  AS "Сумма документа", ' +
+        'i.ed244_answercode, ' +
+        'i.ed244_purpose ' +
+        'FROM ESIDMESSAGE t, esid273doc a, payorder p, inesidmessage i ' +
+        'where t.doctype = 273 ' +
+        'and t.opernum = a.esidopernum ' +
+        'AND p.opernum = a.payopernum ' +
+        "AND i.edtype = 'ED274' " +
+        "and i.eddate >= to_date('01.01.17', 'dd.mm.yyyy') " +
+        "and i.eddate <= to_date('02.01.17', 'dd.mm.yyyy') " +
+        'AND MOD(i.ed243_edno / 1000, 1) * 1000 = a.edno ' +
+        'AND i.ed243_eddate = a.eddate';
     conn.execute(
-        "select * from X$USERS t order by xu$name",
+        sql,
         {}, // A bind variable parameter is needed to disambiguate the following options parameter
         // otherwise you will get Error: ORA-01036: illegal variable name/number
         {outFormat: oracledb.OBJECT}, // outFormat can be OBJECT or ARRAY.  The default is ARRAY
@@ -92,7 +88,7 @@ async.waterfall(
     [
         doconnect,
         doquery_array,
-        doquery_object
+        // doquery_object
     ],
     function (err, conn) {
         if (err) {

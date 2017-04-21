@@ -6,7 +6,6 @@ let dbOrcl = new Db();
 export default class answersModel {
     getReport = (arrDate) => {
         return new Promise((resolve, reject) => {
-            // let sql = 'select * from X$USERS t order by xu$name';
             let sql = '';
 
             if (process.env.NODE_ENV === 'home') {
@@ -25,22 +24,22 @@ export default class answersModel {
                            and t.operdate <= to_date(:dateTo, 'mm.dd.yyyy')
                          order by t.operdate asc`;
             } else {
-                sql = `select t.docdate          AS "Дата ED274",
-                t.opernum          AS "Код ED273",
-                    p.docdate          AS "Дата документа",
-                    p.docnum           AS "Номер документа",
-                    p.paysum           AS "Сумма документа",
-                    i.ed244_answercode,
-                    i.ed244_purpose
-                from ESIDMESSAGE t, esid273doc a, payorder p, inesidmessage i
-                where t.doctype = 273
-                and t.opernum = a.esidopernum
-                AND p.opernum = a.payopernum
-                AND i.edtype = 'ED274'
-                and i.eddate >= to_date(:dateFrom, 'mm.dd.yyyy')
-                and i.eddate <= to_date(:dateTo, 'mm.dd.yyyy')
-                AND MOD(i.ed243_edno / 1000, 1) * 1000 = a.edno
-                AND i.ed243_eddate = a.eddate`;
+                sql = 'select t.docdate AS "Дата ED274", ' +
+                    't.opernum AS "Код ED273", ' +
+                    'p.docdate AS "Дата документа", ' +
+                    'p.docnum  AS "Номер документа", ' +
+                    'p.paysum  AS "Сумма документа", ' +
+                    'i.ed244_answercode, ' +
+                    'i.ed244_purpose ' +
+                    'FROM ESIDMESSAGE t, esid273doc a, payorder p, inesidmessage i ' +
+                    "where t.doctype = 273 " +
+                    "and t.opernum = a.esidopernum " +
+                    "AND p.opernum = a.payopernum " +
+                    "AND i.edtype = 'ED274' " +
+                    "and i.eddate >= to_date(:dateFrom, 'mm.dd.yyyy') " +
+                    "and i.eddate <= to_date(:dateTo, 'mm.dd.yyyy') " +
+                    "AND MOD(i.ed243_edno / 1000, 1) * 1000 = a.edno " +
+                    "AND i.ed243_eddate = a.eddate";
             }
             dbOrcl.doConnect()
                 .then(connection => {

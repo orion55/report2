@@ -19,7 +19,11 @@ app.use(bodyParser.json({
 
 app.use(expressValidator());
 
-const dirName = process.cwd();
+let dirName = process.cwd();
+if (process.env.NODE_ENV === 'prodaction') {
+    dirName = dirName.split('/').slice(0, -1).join('/');
+}
+
 app.set('docsPath', path.join(dirName, 'docs'));
 
 app.use(favicon(path.join(dirName, 'docs', 'favicon.ico')));
