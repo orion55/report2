@@ -39,6 +39,7 @@ var _config2 = _interopRequireDefault(_config);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var expressValidator = require('express-validator');
+var clc = require('cli-color');
 
 var app = (0, _express2.default)();
 app.server = _http2.default.createServer(app);
@@ -52,8 +53,18 @@ app.use(_bodyParser2.default.json({
 app.use(expressValidator());
 
 var dirName = process.cwd();
-if (process.env.NODE_ENV === 'prodaction') {
-    dirName = dirName.split('/').slice(0, -1).join('/');
+
+if (process.env.NODE_ENV === undefined) {
+    process.env.NODE_ENV = _config2.default.env;
+}
+
+switch (process.env.NODE_ENV) {
+    case 'home':
+        dirName = dirName.split('\\').slice(0, -1).join('\\');
+        break;
+    case 'prodaction':
+        dirName = dirName.split('/').slice(0, -1).join('/');
+        break;
 }
 
 app.set('docsPath', _path2.default.join(dirName, 'docs'));
@@ -68,7 +79,7 @@ app.get('/', function (req, res) {
 });
 
 app.server.listen(process.env.PORT || _config2.default.port);
-console.log('Started on port ' + app.server.address().port);
+console.log(clc.cyanBright('Started on port ' + app.server.address().port));
 
 exports.default = app;
 //# sourceMappingURL=index.js.map

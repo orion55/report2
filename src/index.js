@@ -7,6 +7,7 @@ import api from './api';
 import path from 'path';
 import config from './config/config.json';
 let expressValidator = require('express-validator');
+let clc = require('cli-color');
 
 let app = express();
 app.server = http.createServer(app);
@@ -20,8 +21,18 @@ app.use(bodyParser.json({
 app.use(expressValidator());
 
 let dirName = process.cwd();
-if (process.env.NODE_ENV === 'prodaction') {
-    dirName = dirName.split('/').slice(0, -1).join('/');
+
+if (process.env.NODE_ENV === undefined) {
+    process.env.NODE_ENV = config.env;
+}
+
+switch (process.env.NODE_ENV) {
+    case 'home':
+        dirName = dirName.split('\\').slice(0, -1).join('\\');
+        break;
+    case 'prodaction':
+        dirName = dirName.split('/').slice(0, -1).join('/');
+        break;
 }
 
 app.set('docsPath', path.join(dirName, 'docs'));
@@ -36,6 +47,6 @@ app.get('/', function (req, res) {
 });
 
 app.server.listen(process.env.PORT || config.port);
-console.log(`Started on port ${app.server.address().port}`);
+console.log(clc.cyanBright(`Started on port ${app.server.address().port}`));
 
 export default app;
