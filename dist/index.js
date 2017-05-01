@@ -40,6 +40,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var expressValidator = require('express-validator');
 var clc = require('cli-color');
+var cors = require('cors');
 
 var app = (0, _express2.default)();
 app.server = _http2.default.createServer(app);
@@ -54,13 +55,11 @@ app.use(expressValidator());
 
 var dirName = process.cwd();
 
-if (process.env.NODE_ENV === undefined) {
-    process.env.NODE_ENV = _config2.default.env;
-}
-
-switch (process.env.NODE_ENV) {
+var env = process.env.NODE_ENV === undefined ? _config2.default.env : process.env.NODE_ENV;
+switch (env) {
     case 'home':
-        dirName = dirName.split('\\').slice(0, -1).join('\\');
+        if (dirName.indexOf('docs') > 0) dirName = dirName.split('\\').slice(0, -1).join('\\');
+        if (dirName.indexOf('dist') > 0) dirName = dirName.split('\\').slice(0, -1).join('\\');
         break;
     case 'prodaction':
         dirName = dirName.split('/').slice(0, -1).join('/');
@@ -72,8 +71,9 @@ app.set('docsPath', _path2.default.join(dirName, 'docs'));
 app.use((0, _serveFavicon2.default)(_path2.default.join(dirName, 'docs', 'favicon.ico')));
 app.use(_express2.default.static(dirName + '/docs'));
 
-app.use('/api/v1', _api2.default);
+app.use(cors());
 
+app.use('/api/v1', _api2.default);
 app.get('/', function (req, res) {
     res.send('All is Ok!');
 });

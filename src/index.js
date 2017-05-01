@@ -8,6 +8,7 @@ import path from 'path';
 import config from './config/config.json';
 let expressValidator = require('express-validator');
 let clc = require('cli-color');
+let cors = require('cors');
 
 let app = express();
 app.server = http.createServer(app);
@@ -22,13 +23,13 @@ app.use(expressValidator());
 
 let dirName = process.cwd();
 
-if (process.env.NODE_ENV === undefined) {
-    process.env.NODE_ENV = config.env;
-}
-
-switch (process.env.NODE_ENV) {
+let env = process.env.NODE_ENV === undefined ? config.env : process.env.NODE_ENV;
+switch (env) {
     case 'home':
-        dirName = dirName.split('\\').slice(0, -1).join('\\');
+        if (dirName.indexOf('docs') > 0)
+            dirName = dirName.split('\\').slice(0, -1).join('\\');
+        if (dirName.indexOf('dist') > 0)
+            dirName = dirName.split('\\').slice(0, -1).join('\\');
         break;
     case 'prodaction':
         dirName = dirName.split('/').slice(0, -1).join('/');
@@ -40,8 +41,9 @@ app.set('docsPath', path.join(dirName, 'docs'));
 app.use(favicon(path.join(dirName, 'docs', 'favicon.ico')));
 app.use(express.static(dirName + '/docs'));
 
-app.use('/api/v1', api);
+app.use(cors());
 
+app.use('/api/v1', api);
 app.get('/', function (req, res) {
     res.send('All is Ok!');
 });
