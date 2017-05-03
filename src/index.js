@@ -44,9 +44,6 @@ app.use(express.static(dirName + '/docs'));
 app.use(cors());
 
 app.use('/api/v1', api);
-app.get('/', function (req, res) {
-    res.send('All is Ok!');
-});
 
 app.server.listen(process.env.PORT || config.port);
 console.log(clc.cyanBright(`Started on port ${app.server.address().port}`));

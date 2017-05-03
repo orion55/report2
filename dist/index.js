@@ -74,9 +74,6 @@ app.use(_express2.default.static(dirName + '/docs'));
 app.use(cors());
 
 app.use('/api/v1', _api2.default);
-app.get('/', function (req, res) {
-    res.send('All is Ok!');
-});
 
 app.server.listen(process.env.PORT || _config2.default.port);
 console.log(clc.cyanBright('Started on port ' + app.server.address().port));
