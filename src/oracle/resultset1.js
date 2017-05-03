@@ -52,9 +52,9 @@ oracledb.getConnection(
             "and t.opernum = a.esidopernum " +
             "AND p.opernum = a.payopernum " +
             "AND i.edtype = 'ED274' " +
-            "and i.eddate >= to_date('01.01.2017', 'mm.dd.yyyy') " +
-            "and i.eddate <= to_date('02.01.2017', 'mm.dd.yyyy') " +
-            "AND MOD(i.ed243_edno / 1000, 1) * 1000 = a.edno " +
+            "and i.eddate >= to_date('04.01.2017', 'mm.dd.yyyy') " +
+            "and i.eddate <= to_date('04.30.2017', 'mm.dd.yyyy') " +
+            "AND a.edno = MOD(i.ed243_edno / 1000, 1) * 1000 " +
             "AND i.ed243_eddate = a.eddate";
         connection.execute(
             sql,

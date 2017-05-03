@@ -17,7 +17,7 @@ anwersRouter.route('/').get(function (req, res) {
                 res.status(500).send(JSON.stringify(removeDuplicates(result.array(), 'param')));
                 return;
             }
-            answers.getReport({dateFrom: req.query.from, dateTo: req.query.to})
+            answers.getReport2({dateFrom: req.query.from, dateTo: req.query.to})
                 .then(result => {
                     let xlsx = new XlsxModel();
                     return xlsx.exportXlsx(result.rows, result.metaData);
