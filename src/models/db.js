@@ -11,14 +11,15 @@ switch (process.env.NODE_ENV) {
         config = require('../config/configDbProd.json');
         break;
     default:
-        console.log("Sorry, no DB config");
+        config = require('../config/configDbProd.json');
 }
 
 let oracleDb = require('oracledb');
 
 export default class Db {
     doConnect = () => oracleDb.getConnection(config.db);
-    doExecuteArr = (connect, sql, arrDate) => connect.execute(sql, arrDate, {resultSet: true, prefetchRows: 1});
+    doExecuteArr = (connect, sql, arr) => connect.execute(sql, arr, {resultSet: true, prefetchRows: 1});
+    doExecute = (connect, sql, arr) => connect.execute(sql, arr, {prefetchRows: 1});
     doClose = (connect) => connect.close();
     doCloseResultSet = (resultSet) => resultSet.close();
 }

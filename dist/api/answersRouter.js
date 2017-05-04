@@ -31,7 +31,7 @@ anwersRouter.route('/').get(function (req, res) {
             res.status(500).send(JSON.stringify((0, _util.removeDuplicates)(result.array(), 'param')));
             return;
         }
-        answers.getReport({ dateFrom: req.query.from, dateTo: req.query.to }).then(function (result) {
+        answers.getReport2({ dateFrom: req.query.from, dateTo: req.query.to }).then(function (result) {
             var xlsx = new _excel2.default();
             return xlsx.exportXlsx(result.rows, result.metaData);
         }).then(function (result) {

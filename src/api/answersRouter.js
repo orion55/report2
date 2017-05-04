@@ -31,7 +31,8 @@ anwersRouter.route('/').get(function (req, res) {
                 .catch(err => {
                     res.set('Content-Type', 'application/json');
                     res.status(err.status).send(JSON.stringify(err));
-                })
+                });
+
         });
 });
 

@@ -19,7 +19,7 @@ switch (process.env.NODE_ENV) {
         config = require('../config/configDbProd.json');
         break;
     default:
-        console.log("Sorry, no DB config");
+        config = require('../config/configDbProd.json');
 }
 
 var oracleDb = require('oracledb');
@@ -31,8 +31,12 @@ var Db = function Db() {
         return oracleDb.getConnection(config.db);
     };
 
-    this.doExecuteArr = function (connect, sql, arrDate) {
-        return connect.execute(sql, arrDate, { resultSet: true, prefetchRows: 1 });
+    this.doExecuteArr = function (connect, sql, arr) {
+        return connect.execute(sql, arr, { resultSet: true, prefetchRows: 1 });
+    };
+
+    this.doExecute = function (connect, sql, arr) {
+        return connect.execute(sql, arr, { prefetchRows: 1 });
     };
 
     this.doClose = function (connect) {
