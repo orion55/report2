@@ -9,6 +9,7 @@ import config from './config/config.json';
 let expressValidator = require('express-validator');
 let clc = require('cli-color');
 let cors = require('cors');
+const mongoose = require('mongoose');
 
 let app = express();
 app.server = http.createServer(app);
@@ -36,12 +37,16 @@ switch (env) {
         break;
 }
 
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/users');
+
 app.set('docsPath', path.join(dirName, 'docs'));
 
 app.use(favicon(path.join(dirName, 'docs', 'favicon.ico')));
 app.use(express.static(dirName + '/docs'));
 
 app.use(cors());
+// app.use(bodyParser.json({ type: '*/*' }));
 
 app.use('/api/v1', api);
 

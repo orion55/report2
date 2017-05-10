@@ -41,6 +41,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var expressValidator = require('express-validator');
 var clc = require('cli-color');
 var cors = require('cors');
+var mongoose = require('mongoose');
 
 var app = (0, _express2.default)();
 app.server = _http2.default.createServer(app);
@@ -66,12 +67,16 @@ switch (env) {
         break;
 }
 
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://localhost/users');
+
 app.set('docsPath', _path2.default.join(dirName, 'docs'));
 
 app.use((0, _serveFavicon2.default)(_path2.default.join(dirName, 'docs', 'favicon.ico')));
 app.use(_express2.default.static(dirName + '/docs'));
 
 app.use(cors());
+// app.use(bodyParser.json({ type: '*/*' }));
 
 app.use('/api/v1', _api2.default);
 
