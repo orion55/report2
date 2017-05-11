@@ -2,6 +2,7 @@ let express = require('express');
 let router = express.Router();
 let bodyParser = require('body-parser');
 const User = require('../models/user');
+import {removeDuplicates} from '../util';
 
 router.use(bodyParser.urlencoded({extended: true}));
 
@@ -45,10 +46,47 @@ router.post('/', function (req, res) {
 
 // RETURNS ALL THE USERS IN THE DATABASE
 router.get('/', function (req, res) {
-    User.find({}, function (err, users) {
-        if (err) return res.status(500).send("There was a problem finding the users.");
-        res.status(200).send(users);
-    });
+    req.checkQuery('_sort', 'Invalid _sort').isAscii();
+    req.checkQuery('_order', 'Invalid _order').isAlpha();
+    req.checkQuery('_start', 'Invalid _start').isInt();
+    req.checkQuery('_end', 'Invalid _end').isInt();
+
+    req.getValidationResult()
+        .then(result => {
+            if (!result.isEmpty()) {
+                res.set('Content-Type', 'application/json');
+                res.status(500).send(JSON.stringify(removeDuplicates(result.array(), 'param')));
+            }
+
+            const sort_field = req.query._sort || "_id";
+            const sort_order = req.query._order === 'DESC' ? -1 : 1;
+
+            let sort_obj = {};
+            sort_obj[sort_field] = sort_order;
+
+            let options = {
+                select: '_id email password',
+                sort: sort_obj,
+                offset: +req.query._start,
+                limit: req.query._end - req.query._start
+            };
+
+            User.paginate({}, options)
+                .then(result => {
+                    let newDocs = result.docs.map(el => {
+                        let rObj = Object.assign({}, el._doc);
+                        rObj["id"] = el._id;
+                        delete rObj._id;
+                        return rObj;
+                    });
+                    res.setHeader('X-Total-Count', result.total);
+                    res.setHeader('Access-Control-Expose-Headers', 'X-Total-Count');
+                    res.status(200).send(newDocs);
+                })
+                .catch(err => {
+                    res.status(500).send(err);
+                });
+        });
 });
 
 // GETS A SINGLE USER FROM THE DATABASE
