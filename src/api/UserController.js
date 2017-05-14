@@ -3,6 +3,7 @@ let router = express.Router();
 let bodyParser = require('body-parser');
 const User = require('../models/user');
 import {removeDuplicates} from '../util';
+const getFullURL = require('../util/get-full-url');
 
 router.use(bodyParser.urlencoded({extended: true}));
 
@@ -37,9 +38,9 @@ router.post('/', function (req, res) {
                 return next(err);
             }
 
-            // Repond to request indicating the user was created
-            // res.json({token: tokenForUser(user)});
-            res.status(200).send(user);
+            let newUser = Object.assign({}, user);
+            newUser["id"] = user._id;
+            res.status(200).send(newUser);
         });
     });
 });
@@ -102,7 +103,7 @@ router.get('/:id', function (req, res) {
 router.delete('/:id', function (req, res) {
     User.findByIdAndRemove(req.params.id, function (err, user) {
         if (err) return res.status(500).send("There was a problem deleting the user.");
-        res.status(200).send("User: " + user.name + " was deleted.");
+        res.status(200).send("User: " + user.email + " was deleted.");
     });
 });
 
