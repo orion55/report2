@@ -51,6 +51,6 @@ app.use(cors());
 app.use('/api/v1', api);
 
 app.server.listen(process.env.PORT || config.port);
-console.log(clc.cyanBright(`Started on port ${app.server.address().port}`));
+console.log(clc.cyan(`Started on port ${app.server.address().port}`));
 
 export default app;

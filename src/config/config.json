@@ -1,5 +1,6 @@
 {
   "port": 8080,
   "bodyLimit": "100kb",
-  "env": "home"
+  "env": "home",
+  "secret": "b^Qli/U;/C76Q:r*y%H1A-^-w)!Qj+:iQYPuz=lr>NJrji~}X@1qv/C>+&P ;)v|"
 }
