@@ -2,11 +2,13 @@ import {Router} from 'express';
 import AnswersModel from '../models/answersModel';
 import {removeDuplicates} from '../util';
 import XlsxModel from '../models/excel';
+const passport = require('passport');
 
 let anwersRouter = Router();
 let answers = new AnswersModel();
+const requireAuth = passport.authenticate('jwt', {session: false});
 
-anwersRouter.route('/').get(function (req, res) {
+anwersRouter.get('/', requireAuth, function (req, res) {
     req.checkQuery('from', 'Invalid From date').notEmpty().isDate();
     req.checkQuery('to', 'Invalid To date').notEmpty().isDate();
 

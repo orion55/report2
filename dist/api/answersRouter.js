@@ -18,10 +18,13 @@ var _excel2 = _interopRequireDefault(_excel);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+var passport = require('passport');
+
 var anwersRouter = (0, _express.Router)();
 var answers = new _answersModel2.default();
+var requireAuth = passport.authenticate('jwt', { session: false });
 
-anwersRouter.route('/').get(function (req, res) {
+anwersRouter.get('/', requireAuth, function (req, res) {
     req.checkQuery('from', 'Invalid From date').notEmpty().isDate();
     req.checkQuery('to', 'Invalid To date').notEmpty().isDate();
 

@@ -1,6 +1,7 @@
 'use strict';
 
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcrypt-nodejs');
 
@@ -44,6 +45,8 @@ userSchema.methods.comparePassword = function (candidatePassword, callback) {
         callback(null, isMatch);
     });
 };
+
+userSchema.plugin(mongoosePaginate);
 
 // Create the model class
 var ModelClass = mongoose.model('user', userSchema);

@@ -4,11 +4,13 @@ let bodyParser = require('body-parser');
 const User = require('../models/user');
 import {removeDuplicates} from '../util';
 const getFullURL = require('../util/get-full-url');
+const passport = require('passport');
 
 router.use(bodyParser.urlencoded({extended: true}));
+const requireAuth = passport.authenticate('jwt', {session: false});
 
 // CREATES A NEW USER
-router.post('/', function (req, res) {
+router.post('/', requireAuth, function (req, res) {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -46,7 +48,7 @@ router.post('/', function (req, res) {
 });
 
 // RETURNS ALL THE USERS IN THE DATABASE
-router.get('/', function (req, res) {
+router.get('/', requireAuth, function (req, res) {
     req.checkQuery('_sort', 'Invalid _sort').isAscii();
     req.checkQuery('_order', 'Invalid _order').isAlpha();
     req.checkQuery('_start', 'Invalid _start').isInt();
@@ -91,7 +93,7 @@ router.get('/', function (req, res) {
 });
 
 // GETS A SINGLE USER FROM THE DATABASE
-router.get('/:id', function (req, res) {
+router.get('/:id', requireAuth, function (req, res) {
     User.findById(req.params.id, function (err, user) {
         if (err) return res.status(500).send("There was a problem finding the user.");
         if (!user) return res.status(404).send("No user found.");
@@ -100,7 +102,7 @@ router.get('/:id', function (req, res) {
 });
 
 // DELETES A USER FROM THE DATABASE
-router.delete('/:id', function (req, res) {
+router.delete('/:id', requireAuth, function (req, res) {
     User.findByIdAndRemove(req.params.id, function (err, user) {
         if (err) return res.status(500).send("There was a problem deleting the user.");
         res.status(200).send("User: " + user.email + " was deleted.");
@@ -108,7 +110,7 @@ router.delete('/:id', function (req, res) {
 });
 
 // UPDATES A SINGLE USER IN THE DATABASE
-router.put('/:id', function (req, res) {
+router.put('/:id', requireAuth, function (req, res) {
     User.findByIdAndUpdate(req.params.id, req.body, {new: true}, function (err, user) {
         if (err) return res.status(500).send("There was a problem updating the user.");
         res.status(200).send(user);

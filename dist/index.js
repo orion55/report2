@@ -81,7 +81,7 @@ app.use(cors());
 app.use('/api/v1', _api2.default);
 
 app.server.listen(process.env.PORT || _config2.default.port);
-console.log(clc.cyanBright('Started on port ' + app.server.address().port));
+console.log(clc.cyan('Started on port ' + app.server.address().port));
 
 exports.default = app;
 //# sourceMappingURL=index.js.map
